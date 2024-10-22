@@ -2,20 +2,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.http import Http404
-from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer
+from .models import Band, Tour, Pledge, Genre
+from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer
 from .permissions import IsOwnerOrReadOnly
 
-class ProjectList(APIView):
+class TourList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
+        tours = Tour.objects.all()
+        serializer = TourSerializer(tours, many=True)
         return Response(serializer.data)
     
     def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
+        serializer = TourSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(
@@ -28,7 +28,7 @@ class ProjectList(APIView):
         )
 
 
-class ProjectDetail(APIView):
+class TourDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
@@ -37,21 +37,21 @@ class ProjectDetail(APIView):
 
     def get_object(self, pk):
         try:
-            project = Project.objects.get(pk=pk)
-            self.check_object_permissions(self.request, project)
-            return project
-        except Project.DoesNotExist:
+            title = Tour.objects.get(pk=pk)
+            self.check_object_permissions(self.request, title)
+            return title
+        except Tour.DoesNotExist:
             raise Http404
     
     def get(self, request, pk):
-        project = self.get_object(pk)
-        serializer = ProjectDetailSerializer(project)
+        title = self.get_object(pk)
+        serializer = TourDetailSerializer(title)
         return Response(serializer.data)
 
     def put(self, request, pk):
-        project = self.get_object(pk)
-        serializer = ProjectDetailSerializer(
-            instance=project,
+        title = self.get_object(pk)
+        serializer = TourDetailSerializer(
+            instance=title,
             data=request.data,
             partial=True
         )
@@ -65,7 +65,6 @@ class ProjectDetail(APIView):
         )
 
 class PledgeList(APIView):
-    # TODO confirm if below code is correct
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
@@ -86,3 +85,83 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
+class BandList(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        band = Band.objects.all()
+        serializer = BandSerializer(band, many=True)
+        return Response(serializer.data)
+
+
+    def post(self, request):
+        serializer = BandSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+class BandDetail(APIView):
+
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
+
+    def get_object(self, pk):
+        try:
+            band = Band.objects.get(pk=pk)
+            self.check_object_permissions(self.request, band)
+            return band
+        except Band.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, pk):
+        band = self.get_object(pk)
+        serializer = BandDetailSerializer(band)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        band = self.get_object(pk)
+        serializer = BandDetailSerializer(
+            instance=band,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class GenreList(APIView):
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        genre = Genre.objects.all()
+        serializer = GenreSerializer(genre, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = GenreSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
