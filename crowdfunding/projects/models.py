@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -28,14 +29,14 @@ class Band(models.Model):
         on_delete=models.CASCADE)
 
 
-# NOTE may not be achieved in this sprint. This is automatically updated where open project is associated with band.
+# TODO This is automatically updated where open project is associated with band.
 # I would like front-end for band page to display links to current (and previous) tours. Need to work out how to do this.
     # upcoming_tour = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return self.name
 
-#  NOTE nice to have for Django sprint. Rules around deletion.
+#  TODO Add rules around deletion.
     # def delete(self):
     #     self.active = False
     #     self.save()
