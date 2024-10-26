@@ -6,6 +6,7 @@ from .models import Band, Tour, Pledge, Genre
 from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer
 from .permissions import IsOwnerOrReadOnly
 
+
 class TourList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -13,7 +14,8 @@ class TourList(APIView):
         tours = Tour.objects.all()
         serializer = TourSerializer(tours, many=True)
         return Response(serializer.data)
-    
+
+# TODO limit to usertype bandmember only    
     def post(self, request):
         serializer = TourSerializer(data=request.data)
         if serializer.is_valid():
@@ -48,6 +50,7 @@ class TourDetail(APIView):
         serializer = TourDetailSerializer(title)
         return Response(serializer.data)
 
+# TODO limit to usertype bandmember only
     def put(self, request, pk):
         title = self.get_object(pk)
         serializer = TourDetailSerializer(
@@ -63,6 +66,12 @@ class TourDetail(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+    def delete(self, request, pk):
+        band = self.get_object(pk)
+        band.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class PledgeList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -94,9 +103,9 @@ class BandList(APIView):
         serializer = BandSerializer(band, many=True)
         return Response(serializer.data)
 
-
+# TODO limit to usertype bandmember only
     def post(self, request):
-        serializer = BandSerializer(data=request.data)
+        serializer = BandSerializer(data=request.data) 
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(
@@ -128,6 +137,7 @@ class BandDetail(APIView):
         serializer = BandDetailSerializer(band)
         return Response(serializer.data)
 
+# TODO limit to usertype bandmember only
     def put(self, request, pk):
         band = self.get_object(pk)
         serializer = BandDetailSerializer(
@@ -144,9 +154,15 @@ class BandDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    def delete(self, request, pk):
+        band = self.get_object(pk)
+        band.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class GenreList(APIView):
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+# TODO limit to superuser / admin only
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         genre = Genre.objects.all()

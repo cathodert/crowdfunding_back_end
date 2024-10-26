@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.apps import apps
+from users.models import CustomUser
 
 
 class PledgeSerializer(serializers.ModelSerializer):
@@ -16,7 +17,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class BandSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
-    
+
     class Meta:
         model = apps.get_model('projects.Band')
         fields = '__all__'
