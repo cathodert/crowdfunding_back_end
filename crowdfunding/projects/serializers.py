@@ -15,6 +15,19 @@ class GenreSerializer(serializers.ModelSerializer):
         model = apps.get_model('projects.Genre')
         fields = '__all__'
 
+class GenreDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = apps.get_model('projects.Genre')
+        fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+        return instance
+    
+
 class BandSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
 

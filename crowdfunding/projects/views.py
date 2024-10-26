@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.http import Http404
 from .models import Band, Tour, Pledge, Genre
-from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer
-from .permissions import IsOwnerOrReadOnly
+from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer, GenreDetailSerializer
+from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
 
 
 class TourList(APIView):
@@ -162,7 +162,7 @@ class BandDetail(APIView):
 
 class GenreList(APIView):
 # TODO limit to superuser / admin only
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
 
     def get(self, request):
         genre = Genre.objects.all()
@@ -177,6 +177,38 @@ class GenreList(APIView):
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+class  GenreDetail(APIView): 
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            genre = Genre.objects.get(pk=pk)
+            self.check_object_permissions(self.request, genre)
+            return genre
+        except Band.DoesNotExist:
+            raise Http404
+  
+    def get(self, request, pk):
+        genre = self.get_object(pk)
+        serializer = GenreDetailSerializer(genre)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        name = self.get_object(pk)
+        serializer = GenreDetailSerializer(
+            instance=name,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST

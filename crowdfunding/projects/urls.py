@@ -7,5 +7,6 @@ urlpatterns = [
     path('pledges/', views.PledgeList.as_view()),
     path('bands/', views.BandList.as_view()),
     path('bands/<int:pk>/', views.BandDetail.as_view()),
-    path('genres/', views.GenreList.as_view())
+    path('genres/', views.GenreList.as_view()),
+    path('genres/<int:pk>/', views.GenreDetail.as_view())   
 ]
