@@ -16,7 +16,8 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(
         max_length=2,
         choices=USER_TYPE_CHOICES,
-        blank=False)
+        blank=False,
+        default="SU")
     
     # TODO removed genres from sprint project as had issues with Not Null and couldn't work it out
     # user_genres = models.ForeignKey(
