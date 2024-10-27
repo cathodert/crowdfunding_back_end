@@ -110,12 +110,12 @@ Note currently genres is a separate page. Prior to implementation of front end t
 
 #### POST request
 
-![Image of POST request for crowdfunding project](./img/POST_request.png)
+![Image of POST request for crowdfunding project](./img/POST_request_screenshot.png)
 
 #### GET request
 
-![Image of GET request for crowdfunding project](./img/GET_request.png)
+![Image of GET request for crowdfunding project](./img/GET_request_screenshot.png)
 
 ### Authentication token
 
-![Image of authentication token for crowdfunding project](./img/Authentication_token.png)
+![Image of authentication token for crowdfunding project](./img/Authentication_token_screenshot.png)
