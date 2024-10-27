@@ -40,18 +40,12 @@ A future enhancement will be to add a "like" function. Individuals could like a 
   - Displays all tours listed on website, with options to filter by various options e.g. genre, open tour, etc. Default is open tours.
   - Each tour listing links to tour details page
 - Tour details page
-  - Displays info on invidiual bantourd
+  - Displays info on invidiual tour
   - Option to make pledge (if current open tour)
 
 Note currently genres is a separate page. Prior to implementation of front end this will be table that is not visible. Genres will be managed by admin and the field will only be available as dropdown list (for users, bands and tours) and as option to filter bands and tours.
 
 ### API Spec
-
-{{ Fill out the table below to define your endpoints. An example of what this might look like is shown at the bottom of the page.
-
-It might look messy here in the PDF, but once it's rendered it looks very neat!
-
-It can be helpful to keep the markdown preview open in VS Code so that you can see what you're typing more easily. }}
 
 | URL          | HTTP Method | Purpose                                                             | Request Body | Success Response Code             | Authentication/Authorisation                                       |
 | ------------ | ----------- | ------------------------------------------------------------------- | ------------ | --------------------------------- | ------------------------------------------------------------------ |
@@ -68,7 +62,60 @@ It can be helpful to keep the markdown preview open in VS Code so that you can s
 | /users/    | POST        | Create new user| N/A | 201 | Must be logged in |
 | /users/1 | PUT | Updates user with ID of '1' | User object | 200  | Must be logged in and pledge owner |
 | /users/1/ | DELETE | Deletes user with ID of '1' (and all associated pledges) | Project object | 201 | Must be logged in and must be user |
+| /pledges/ | POST | Create new pledge | N/A | 201 | Must be logged in (future enhancement to be user type supporter only) |
 
 ### DB Schema
 
-![]( {{ ./relative/path/to/your/schema/image.png }} )
+![Image of ERD for crowdfunding project](.img/ERD.png)
+
+### Step by step instructions
+
+#### 1. Create new user
+
+- Go to <https://bandtogethr-e2b0af362861.herokuapp.com/users/>
+- Enter details
+  - Required fields: "username", "password", "email" and "user_type" [note: user type options SU (supporter) and BM (band member)]
+  - Optional fields: "first name", "last name", "*genre*", "*band*"
+  - System-generated fields: "id", "date_joined". To determine if additional default fields of Abstract user will be utilised
+
+#### 2. Create a new band
+
+- Go to <https://bandtogethr-e2b0af362861.herokuapp.com/band/>
+- User must be logged in. Note: future enhancement will mean that only users of user type "band member" will be able to create bands.
+- Enter details
+  - Required fields: "band_name" (must be unique), "country", "description", "cover_image", "website" and "genre"
+  - System-generated fields: "id" and "owner"
+  - Fields to be added (future enhancement) include "is_verfied" (managed by admin), "is_current" (managed by owner), and "upcoming_tour" (automated based on current open tours)
+  - Future enhancement to timestamp "date_created"
+
+#### 3. Create a new tour
+
+- Go to <https://bandtogethr-e2b0af362861.herokuapp.com/tours/>
+- User must be logged in. Note: future enhancement will mean that only users of user type "band member", associated with verified band, will be able to create tours. A band can only have one active (open) tour.
+- Enter details:
+  - Required fields: "title" (must be unique), "description", "goal", "image", "genre" (foreign key [int]), "band" (foreign key - int), and "is_open" (bool)
+  - System-generated fields: "id", "date_created", "owner"
+  - Fields to be added (future enhancement): "tour_year", "tour_status", "eoi/watchlist", and "deadline"
+
+#### 4. Make a pledge
+
+- Go to <https://bandtogethr-e2b0af362861.herokuapp.com/pledges/>
+- User must be logged in.
+- Enter details:
+  - Required fields: "tours", "amount", "comment", "anonymous", "band" and "genre" (future enhancement would have these fileds pre-populated.)
+  - System-generated fields: "id", "supporter"
+  - Future enhancement to timestamp pledges
+
+### Screenshots
+
+#### POST request
+
+![Image of POST request for crowdfunding project](.img/POST_request.png)
+
+#### GET request
+
+![Image of GET request for crowdfunding project](.img/GET_request.png)
+
+### Authentication token
+
+![Image of authentication token for crowdfunding project](.img/Authentication_token.png)
