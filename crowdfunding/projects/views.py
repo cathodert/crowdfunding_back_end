@@ -50,7 +50,6 @@ class TourDetail(APIView):
         serializer = TourDetailSerializer(title)
         return Response(serializer.data)
 
-# TODO limit to usertype bandmember only
     def put(self, request, pk):
         title = self.get_object(pk)
         serializer = TourDetailSerializer(
@@ -103,7 +102,7 @@ class BandList(APIView):
         serializer = BandSerializer(band, many=True)
         return Response(serializer.data)
 
-# TODO limit to usertype bandmember only
+
     def post(self, request):
         serializer = BandSerializer(data=request.data) 
         if serializer.is_valid():
@@ -139,6 +138,7 @@ class BandDetail(APIView):
 
 # TODO limit to usertype bandmember only
     def put(self, request, pk):
+        
         band = self.get_object(pk)
         serializer = BandDetailSerializer(
             instance=band,
