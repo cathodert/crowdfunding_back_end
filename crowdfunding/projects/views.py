@@ -142,6 +142,7 @@ class BandDetail(APIView):
 
 # TODO limit to usertype bandmember only
     def put(self, request, pk):
+        
         band = self.get_object(pk)
         serializer = BandDetailSerializer(
             instance=band,
