@@ -4,12 +4,11 @@ from rest_framework import status, permissions
 from django.http import Http404
 from .models import Band, Tour, Pledge, Genre
 from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer, GenreDetailSerializer
-from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly, IsBandMemberOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
 
 
 class TourList(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsBandMemberOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         tours = Tour.objects.all()
@@ -35,7 +34,6 @@ class TourDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsBandMemberOrReadOnly,
         IsOwnerOrReadOnly
     ]
 
@@ -97,8 +95,7 @@ class PledgeList(APIView):
 
 
 class BandList(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsBandMemberOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         band = Band.objects.all()
@@ -123,7 +120,6 @@ class BandDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsBandMemberOrReadOnly,
         IsOwnerOrReadOnly
     ]
 
