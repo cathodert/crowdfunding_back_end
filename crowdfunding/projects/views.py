@@ -4,11 +4,12 @@ from rest_framework import status, permissions
 from django.http import Http404
 from .models import Band, Tour, Pledge, Genre
 from .serializers import BandSerializer, TourSerializer, PledgeSerializer, GenreSerializer, TourDetailSerializer, BandDetailSerializer, GenreDetailSerializer
-from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly, IsBandMemberOrReadOnly
 
 
 class TourList(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsBandMemberOrReadOnly]
 
     def get(self, request):
         tours = Tour.objects.all()
@@ -34,6 +35,7 @@ class TourDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
+        IsBandMemberOrReadOnly,
         IsOwnerOrReadOnly
     ]
 
@@ -50,7 +52,6 @@ class TourDetail(APIView):
         serializer = TourDetailSerializer(title)
         return Response(serializer.data)
 
-# TODO limit to usertype bandmember only
     def put(self, request, pk):
         title = self.get_object(pk)
         serializer = TourDetailSerializer(
@@ -96,14 +97,15 @@ class PledgeList(APIView):
 
 
 class BandList(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsBandMemberOrReadOnly]
 
     def get(self, request):
         band = Band.objects.all()
         serializer = BandSerializer(band, many=True)
         return Response(serializer.data)
 
-# TODO limit to usertype bandmember only
+
     def post(self, request):
         serializer = BandSerializer(data=request.data) 
         if serializer.is_valid():
@@ -121,6 +123,7 @@ class BandDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
+        IsBandMemberOrReadOnly,
         IsOwnerOrReadOnly
     ]
 

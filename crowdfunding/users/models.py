@@ -18,7 +18,7 @@ class CustomUser(AbstractUser):
         choices=USER_TYPE_CHOICES,
         blank=False,
         )
-    
+
     # TODO removed genres from sprint project as had issues with Not Null and couldn't work it out
     # user_genres = models.ForeignKey(
     #     # models.ManyToManyField(
@@ -37,18 +37,18 @@ class CustomUser(AbstractUser):
     #     on_delete=models.CASCADE
     #     )
 
-    def supporter(self):
-        return self.user_type in{self.SUPPORTER}
+    # def supporter(self):
+    #     return self.user_type in{self.SUPPORTER}
     
-    # TODO work out how to set permissions for band member
-    def band_member(self):
-        # class Meta:
-        #     permissions = Permission.objects.create(
-        #         new_band = "can_create_band",
-        #         new_tour = "can_create_tour"
-        #     )
+    # # TODO work out how to set permissions for band member
+    # def band_member(self):
+    #     # class Meta:
+    #     #     permissions = Permission.objects.create(
+    #     #         new_band = "can_create_band",
+    #     #         new_tour = "can_create_tour"
+    #     #     )
 
-        return self.user_type in {self.BAND_MEMBER}
+    #     return self.user_type in {self.BAND_MEMBER}
 
 
 
